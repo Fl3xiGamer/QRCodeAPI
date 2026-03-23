@@ -8,6 +8,7 @@ const batchRouter = require('./routes/batch');
 const validateRouter = require('./routes/validate');
 
 const app = express();
+app.set('trust proxy', 1);
 const PORT = process.env.PORT || 3000;
 
 app.use(helmet());
