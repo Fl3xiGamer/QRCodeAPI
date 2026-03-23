@@ -113,43 +113,6 @@ Content types detected: `url`, `email`, `phone`, `vcard`, `wifi`, `geo`, `text`
 
 ---
 
-## Deploy to Railway (Free)
-
-1. Push this repo to GitHub
-2. Go to [railway.app](https://railway.app) → **New Project** → **Deploy from GitHub repo**
-3. Select your repo — Railway auto-detects Node.js and deploys
-4. Copy the public URL (e.g. `https://qr-api-production.up.railway.app`)
-
-## Deploy to Render (Free)
-
-1. Go to [render.com](https://render.com) → **New** → **Web Service**
-2. Connect your GitHub repo
-3. Build command: `npm install`
-4. Start command: `node src/index.js`
-5. Copy the public URL
-
----
-
-## List on RapidAPI
-
-1. Go to [rapidapi.com/provider](https://rapidapi.com/provider) and create a free provider account
-2. Click **Add New API** → enter name, description, category (Tools)
-3. Under **Configuration**, set your base URL (from Railway/Render)
-4. Add each endpoint under **Endpoints** with parameters
-5. Under **Plans**, create a Free tier (100 req/day) and a Pro tier (10,000 req/day, $9/mo)
-6. Click **Submit for Review** — approval usually within 24–48h
-
----
-
-## Local Development
-
-```bash
-npm install
-cp .env.example .env
-npm start
-# API runs at http://localhost:3000
-```
-
 ## License
 
 MIT
