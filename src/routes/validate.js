@@ -9,7 +9,7 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
 });
 
-router.post('/', upload.single('image'), async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     let imageBuffer;
 
