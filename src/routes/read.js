@@ -22,7 +22,8 @@ router.post('/', upload.single('image'), async (req, res) => {
       return res.status(400).json({ success: false, error: 'Provide an image file or base64 string.' });
     }
 
-    const { data, info } = await sharp(imageBuffer)
+    const imageBuffer2 = await sharp(imageBuffer).png().toBuffer();
+    const { data, info } = await sharp(imageBuffer2)
       .ensureAlpha()
       .raw()
       .toBuffer({ resolveWithObject: true });
