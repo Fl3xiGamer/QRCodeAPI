@@ -1,22 +1,14 @@
 const express = require('express');
 const multer  = require('multer');
-const { Jimp } = require('jimp');
 const jsQR    = require('jsqr');
+const sharp   = require('sharp');
 const router  = express.Router();
 
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 },
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) cb(null, true);
-    else cb(new Error('Only image files are accepted.'));
-  },
 });
 
-/**
- * POST /validate
- * Same input as /read – returns validity info without the decoded content.
- */
 router.post('/', upload.single('image'), async (req, res) => {
   try {
     let imageBuffer;
@@ -30,19 +22,22 @@ router.post('/', upload.single('image'), async (req, res) => {
       return res.status(400).json({ success: false, error: 'Provide an image file or base64 string.' });
     }
 
-    const image = await Jimp.fromBuffer(imageBuffer);
-    const { data, width, height } = image.bitmap;
-    const code = jsQR(data, width, height, { inversionAttempts: 'dontInvert' });
+    const { data, info } = await sharp(imageBuffer)
+      .ensureAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+
+    const code = jsQR(new Uint8ClampedArray(data), info.width, info.height);
 
     return res.json({
       success: true,
       valid: !!code,
       meta: {
-        imageWidth:  width,
-        imageHeight: height,
-        hasQRCode:   !!code,
+        imageWidth: info.width,
+        imageHeight: info.height,
+        hasQRCode: !!code,
         contentType: code ? detectContentType(code.data) : null,
-        dataLength:  code ? code.data.length : null,
+        dataLength: code ? code.data.length : null,
       },
     });
   } catch (err) {
@@ -51,12 +46,12 @@ router.post('/', upload.single('image'), async (req, res) => {
 });
 
 function detectContentType(str) {
-  if (/^https?:\/\//i.test(str))       return 'url';
-  if (/^mailto:/i.test(str))           return 'email';
-  if (/^tel:/i.test(str))              return 'phone';
-  if (/^BEGIN:VCARD/i.test(str))       return 'vcard';
-  if (/^WIFI:/i.test(str))             return 'wifi';
-  if (/^geo:/i.test(str))              return 'geo';
+  if (/^https?:\/\//i.test(str)) return 'url';
+  if (/^mailto:/i.test(str))     return 'email';
+  if (/^tel:/i.test(str))        return 'phone';
+  if (/^BEGIN:VCARD/i.test(str)) return 'vcard';
+  if (/^WIFI:/i.test(str))       return 'wifi';
+  if (/^geo:/i.test(str))        return 'geo';
   return 'text';
 }
 
