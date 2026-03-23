@@ -30,7 +30,7 @@ router.post('/', upload.single('image'), async (req, res) => {
       return res.status(400).json({ success: false, error: 'Provide an image file or base64 string.' });
     }
 
-    const image = await Jimp.read(imageBuffer);
+    const image = await Jimp.fromBuffer(imageBuffer);
     const { data, width, height } = image.bitmap;
     const code = jsQR(data, width, height, { inversionAttempts: 'dontInvert' });
 
