@@ -1,6 +1,6 @@
 const express = require('express');
 const multer  = require('multer');
-const Jimp    = require('jimp');
+const { Jimp } = require('jimp');
 const jsQR    = require('jsqr');
 const router  = express.Router();
 
